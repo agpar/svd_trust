@@ -77,14 +77,3 @@ class SVDBase:
 
     def prediction_matrix(self):
         return np.matmul(self.U, self.V)
-
-"""
-Demonstration: given users 1 and 2 agree strongly on item 1, user 1's
-low opinion of item 3 and user 2's high opinion of item 2 will be transferred.
-"""
-data = [
-(1,1,5),
-(1,3,0),
-(2,1,5),
-(2,2,5)
-]

@@ -83,13 +83,13 @@ def calc_error(agents, predictor):
     return err / ((len(agents)** 2) - len(agents))
 
 def sparsity_test():
-    sparsities = [0.001 * i for i in range(1, 1001)]
+    sparsities = [0.001 * i for i in range(1, 101)]
     errs = []
     for sp in sparsities:
         agents, ratings = run(sparsity=sp)
 
-        svdb = SVDBase().learn(ratings, 10, 0.1, 0.1, 0.1, 100)
-        svdt = SVDTrust().learn(ratings, 10, 0.1, 0.1, 0.2, 100)
+        svdb = SVDBase().learn(ratings, 10, 0.01, 0.1, 0.1, 100)
+        svdt = SVDTrust().learn(ratings, 10, 0.01, 0.1, 0.3, 100)
 
         svdb_err = calc_error(agents, svdb)
         svdt_err = calc_error(agents, svdt)

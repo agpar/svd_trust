@@ -60,35 +60,33 @@ class SVDTrust:
                 err = rating - pred
 
                 # Special transitive sauce.
+                u_i = U[i, :]
+                u_j = U[j, :]
                 tran_i = 0
                 for k in range(self.n):
-                    u_j = U[j, :]
                     v_k = V[:, k]
 
                     lh = np.dot(u_i, v_k) - np.dot(u_i, v_j) * np.dot(u_j, v_k)
                     rh = v_k - v_j * np.dot(u_j, v_k)
-                    tran_i += tran_pen * lh * rh
-                tran_i = (tran_i / self.n)
-
+                    tran_i += (((1/self.n) * tran_pen) * lh) * rh
 
                 tran_j = 0
                 for k in range(self.n):
-                    u_j = U[j, :]
                     v_k = V[:, k]
 
                     lh = np.dot(u_i, v_k) - np.dot(u_i, v_j) * np.dot(u_j, v_k)
                     rh = - u_i * np.dot(u_j, v_k)
-                    tran_j += tran_pen* lh * rh
-                tran_j = (tran_j / self.n)
+                    tran_j += (((1/self.n) *tran_pen) * lh) * rh
                 # /Special transitive sauce.
 
                 # Calculate new vectors
                 u_i_new = u_i + rate * (err * v_j - reg_pen * u_i - tran_i)
-                v_j_new = v_j + rate * (err * u_i - reg_pen * v_j + tran_j)
+                v_j_new = v_j + rate * (err * u_i - reg_pen * v_j - tran_j)
 
                 # Set new vectors
                 U[i, :] = u_i_new
                 V[:, j] = v_j_new
+
 
         return U, V
 
@@ -100,35 +98,3 @@ class SVDTrust:
 
     def prediction_matrix(self):
         return np.matmul(self.U, self.V)
-
-"""
-Demonstration: given u1 trust u2, what will 1's trust of 3 be?
-"""
-data = [
-# Every user trusts themselves.
-(1,1,1),
-(2,2,1),
-(3,3,1),
-(4,4,1),
-
-# User one combines ratings from 2 and 4 in assessing 3.
-(1,2,0.5),
-(1,4,0.5),
-(2,3,1),
-(4,3,0),
-]
-
-data2 = [
-# Every user trusts themselves.
-(1,1,1),
-(2,2,1),
-(3,3,1),
-(4,4,1),
-
-# How does rater 1's opinion mesh with the reviewers?
-(1,2,1),
-(1,4,1),
-(1,3,0),
-(2,3,1),
-(4,3,1),
-]
